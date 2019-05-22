@@ -22,6 +22,9 @@
     </section>
     @include('inc.footer')
     <script src="{{asset('js/app.js')}}"></script> {{-- <- bootstrap and jquery --}}
+
+    
+    <script src="{{asset('js/jquery.bootpag.min.js')}}"></script>
     <script src="{{asset('js/votes.js')}}"></script>
     
 </body>

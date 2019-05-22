@@ -7,12 +7,21 @@ use Illuminate\Http\Request;
 class PagesController extends Controller
 {
     //
-    public function index() {
-
+    public function index(Request $request) 
+    {
         $json = $this->getHeroesContent();
         $json = json_encode($json);
 
-        return view('pages.index')->with('heroes', json_decode($json, true));
+        $page = 1;
+
+        if( !empty($request->get("page")) && $request->get("page") > 1) {
+            $page = $request->get("page");
+        } 
+        
+        $rows = $this->paginate(json_decode($json, true), $page, 8);
+        
+
+        return view('pages.index')->with('heroes', $rows);
     }
 
     public function view(Request $request) {
@@ -69,11 +78,20 @@ class PagesController extends Controller
 
     private function paginate($data, $page = 1, $perPage = 2) 
     {
-        $x = ($page - 1) * $perPage;
-        $z = $page * $perPage;
-        $y = ($z > count($data)) ? count($data) : $z;
-        for(; $x < $y; $x++) {
-           echo $data[$x]['name'];
+        $result = array();
+        if( isset($data["original"]) )
+        {
+            $data = $data["original"];
+
+            $x = ($page - 1) * $perPage;
+            $z = $page * $perPage;
+            $y = ($z > count($data)) ? count($data) : $z;
+
+            for(; $x < $y; $x++) {
+                $result[$x] = $data[$x];
+            }
+
+            return $result;
         }
-     }
+    }
 }
